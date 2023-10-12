@@ -7,6 +7,11 @@ const weatherApp = document.getElementById('weatherApp')
 fetch(API_URL)
     .then((res) => res.json())
     .then((data) => {
+        weatherApp.innerHTML += `
+        <p>City: ${data.name}</p>
+        <p>Temperature: ${data.main.temp}</p>
+        <p>Type of weather: ${data.weather[0].description}</p>
+        `
         console.log(data)
     })  
     .catch((err) => console.log("Error: ", err))

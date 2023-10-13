@@ -45,6 +45,7 @@ fetch(CURRENT_WEATHER_API_URL)
         const sunset = formatTime(currentData.sys.sunset);
         const description = currentData.weather[0].description;
         const temperature = Math.round(currentData.main.temp * 10) / 10;
+        const feelsLike = Math.round(currentData.main.feels_like * 10) / 10;
 
         document.querySelector(
           ".current-temperature"
@@ -52,6 +53,7 @@ fetch(CURRENT_WEATHER_API_URL)
         document.querySelector(".city").textContent = currentData.name;
         document.querySelector(".time").textContent = `Time: ${formatTime(currentData.dt)}`;
         document.querySelector(".description").textContent = `${description}`;
+        document.querySelector(".feels-like").textContent = `Feels Like ${feelsLike} °C`;
         document.querySelector(
           ".wind-speed"
         ).textContent = `Wind Speed ${currentData.wind.speed} m/s`;

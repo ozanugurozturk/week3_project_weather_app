@@ -9,7 +9,7 @@ fetch(API_URL)
     .then((data) => {
         weatherApp.innerHTML += `
         <p>City: ${data.name}</p>
-        <p>Temperature: ${data.main.temp}</p>
+        <p>Temperature: ${Math.round(data.main.temp * 10) / 10}</p>
         <p>Type of weather: ${data.weather[0].description}</p>
         `
         console.log(data)

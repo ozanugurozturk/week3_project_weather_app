@@ -1,0 +1,63 @@
+/* Reset default margin and padding */
+body, h1, h2, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Center the content vertically and horizontally */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0; /* Background color of the page */
+}
+
+.weather-app {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+}
+
+/* Style headings */
+h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* Style temperature and other data */
+p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+/* Style different weather conditions */
+p[type="Sunny"] {
+    color: #ffcc00; /* Yellow for sunny */
+}
+
+p[type="Rain"] {
+    color: #0077ff; /* Blue for rainy */
+}
+
+/* Style for rainy days */
+p[isRainy="Yes"] {
+    color: #ff0000; /* Red for rainy days */
+}
+
+/* Mobile-first approach: Enhance styles for larger screens */
+@media (min-width: 768px) {
+    .weather-app {
+        max-width: 400px; /* Adjust the max-width as needed */
+        margin: 0 auto;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    p {
+        font-size: 20px;
+    }
+}

@@ -1,5 +1,5 @@
 /* Reset default margin and padding */
-body, h1, h2, p {
+body, h1, h2, p, ul, li, img {
     margin: 0;
     padding: 0;
 }
@@ -18,11 +18,12 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     padding: 20px;
     text-align: center;
+    font-family: Arial, sans-serif;
 }
 
 /* Style headings */
-h2 {
-    font-size: 20px;
+h1 {
+    font-size: 30px;
     margin-bottom: 10px;
 }
 
@@ -32,18 +33,28 @@ p {
     margin: 5px 0;
 }
 
-/* Style different weather conditions */
-p[type="Sunny"] {
-    color: #ffcc00; /* Yellow for sunny */
+/* Style weather icon */
+img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
 }
 
-p[type="Rain"] {
-    color: #0077ff; /* Blue for rainy */
+/* Style the forecast list */
+ul {
+    list-style: none;
+    padding: 0;
 }
 
-/* Style for rainy days */
-p[isRainy="Yes"] {
-    color: #ff0000; /* Red for rainy days */
+li {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+/* Style for forecast items */
+.forecast-item {
+    font-size: 18px;
+    margin: 5px 0;
 }
 
 /* Mobile-first approach: Enhance styles for larger screens */
@@ -53,8 +64,8 @@ p[isRainy="Yes"] {
         margin: 0 auto;
     }
 
-    h2 {
-        font-size: 24px;
+    h1 {
+        font-size: 36px;
     }
 
     p {

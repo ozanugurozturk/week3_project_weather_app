@@ -1,0 +1,74 @@
+/* Reset default margin and padding */
+body, h1, h2, p, ul, li, img {
+    margin: 0;
+    padding: 0;
+}
+
+/* Center the content vertically and horizontally */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0; /* Background color of the page */
+}
+
+.weather-app {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+/* Style headings */
+h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+/* Style temperature and other data */
+p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+/* Style weather icon */
+img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+/* Style the forecast list */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+/* Style for forecast items */
+.forecast-item {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+/* Mobile-first approach: Enhance styles for larger screens */
+@media (min-width: 768px) {
+    .weather-app {
+        max-width: 400px; /* Adjust the max-width as needed */
+        margin: 0 auto;
+    }
+
+    h1 {
+        font-size: 36px;
+    }
+
+    p {
+        font-size: 20px;
+    }
+}

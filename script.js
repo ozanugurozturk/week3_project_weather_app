@@ -19,14 +19,6 @@ const FORECAST_API_URL = `https://api.openweathermap.org/data/2.5/forecast?q=Sto
 
 const weatherApp = document.querySelector(".weather-app");
 
-// Get the current time
-const currentDateTime = new Date();
-const currentHours = currentDateTime.getHours();
-const currentMinutes = currentDateTime.getMinutes();
-const currentTime = `${currentHours < 10 ? "0" + currentHours : currentHours}:${
-  currentMinutes < 10 ? "0" + currentMinutes : currentMinutes
-}`;
-
 // Fetch current weather data
 fetch(CURRENT_WEATHER_API_URL)
   .then((res) => res.json())
@@ -58,8 +50,8 @@ fetch(CURRENT_WEATHER_API_URL)
           ".current-temperature"
         ).textContent = `${temperature} °C`;
         document.querySelector(".city").textContent = currentData.name;
-        document.querySelector(".time").textContent = `Time: ${currentTime}`;
-        document.querySelector(".description").textContent = `${description} `;
+        document.querySelector(".time").textContent = `Time: ${formatTime(currentData.dt)}`;
+        document.querySelector(".description").textContent = `${description}`;
         document.querySelector(
           ".wind-speed"
         ).textContent = `Wind Speed ${currentData.wind.speed} m/s`;
@@ -70,7 +62,7 @@ fetch(CURRENT_WEATHER_API_URL)
         // Display weather forecast
         const forecastList = document.querySelector(".forecast-list");
         forecastList.innerHTML = "";
-        const today = new Date(); // Get the current date
+
         for (const date in dailyForecasts) {
           const maxTemp = Math.max(
             ...dailyForecasts[date].map((forecast) => forecast.main.temp_max)
@@ -85,23 +77,19 @@ fetch(CURRENT_WEATHER_API_URL)
 
           // Calculate the day name for the forecast
           const forecastDate = new Date(date);
-          let dayName = getDayName(forecastDate);
-          if (forecastDate.toDateString() === today.toDateString()) {
-            dayName = "Today";
-          }
+          const dayName = getDayName(forecastDate);
 
-          // Extract wind speed for the day's forecast
-          const windSpeed = dailyForecasts[date][0].wind.speed;
+          // Extract maximum wind speed for the day's forecast
+          const maxWindSpeed = Math.max(
+            ...dailyForecasts[date].map((forecast) => forecast.wind.speed)
+          );
 
           forecastList.innerHTML += `
-                        <li>
-                            ${dayName} <img src="design/design1/assets/Group16.png" alt="Weather Icon" />
-                            ${Math.round(maxTemp * 10) / 10}°C - ${
-            Math.round(minTemp * 10) / 10
-          }°C
-                            ${windSpeed} m/s
-                        </li>
-                    `;
+            <li>
+                ${dayName} Weather Icon <img src="design/design1/assets/Group16.png" alt="Weather Icon" />
+                ${maxTemp.toFixed(1)}°C - ${minTemp.toFixed(1)}°C ${maxWindSpeed.toFixed(1)} m/s
+            </li>
+          `;
         }
       })
       .catch((err) => console.log("Error fetching forecast data: ", err));

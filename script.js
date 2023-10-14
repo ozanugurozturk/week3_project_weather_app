@@ -12,6 +12,72 @@ function getDayName(date) {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   return days[date.getDay()];
 }
+
+// Function to map weather icons based on the provided ID as in the web page
+function mapWeatherConditionToIcon(id) {
+  const iconMappings = {
+    200: "11d",  // Thunderstorm with light rain
+    201: "11d",  // Thunderstorm with rain
+    202: "11d",  // Thunderstorm with heavy rain
+    210: "11d",  // Light thunderstorm
+    211: "11d",  // Thunderstorm
+    212: "11d",  // Heavy thunderstorm
+    221: "11d",  // Ragged thunderstorm
+    230: "11d",  // Thunderstorm with light drizzle
+    231: "11d",  // Thunderstorm with drizzle
+    232: "11d",  // Thunderstorm with heavy drizzle
+    300: "09d",  // Light intensity drizzle
+    301: "09d",  // Drizzle
+    302: "09d",  // Heavy intensity drizzle
+    310: "09d",  // Light intensity drizzle rain
+    311: "09d",  // Drizzle rain
+    312: "09d",  // Heavy intensity drizzle rain
+    313: "09d",  // Shower rain and drizzle
+    314: "09d",  // Heavy shower rain and drizzle
+    321: "09d",  // Shower drizzle
+    500: "10d",  // Light rain
+    501: "10d",  // Moderate rain
+    502: "10d",  // Heavy intensity rain
+    503: "10d",  // Very heavy rain
+    504: "10d",  // Extreme rain
+    511: "13d",  // Freezing rain
+    520: "09d",  // Light intensity shower rain
+    521: "09d",  // Shower rain
+    522: "09d",  // Heavy intensity shower rain
+    531: "09d",  // Ragged shower rain
+    600: "13d",  // Light snow
+    601: "13d",  // Snow
+    602: "13d",  // Heavy snow
+    611: "13d",  // Sleet
+    612: "13d",  // Light shower sleet
+    613: "13d",  // Shower sleet
+    615: "13d",  // Light rain and snow
+    616: "13d",  // Rain and snow
+    620: "13d",  // Light shower snow
+    621: "13d",  // Shower snow
+    622: "13d",  // Heavy shower snow
+    701: "50d",  // Mist
+    711: "50d",  // Smoke
+    721: "50d",  // Haze
+    731: "50d",  // Sand/dust whirls
+    741: "50d",  // Fog
+    751: "50d",  // Sand
+    761: "50d",  // Dust
+    762: "50d",  // Volcanic ash
+    771: "50d",  // Squalls
+    781: "50d",  // Tornado
+    800: "01d",  // Clear sky
+    801: "02d",  // few clouds: 11-25%
+    802: "03d",  // scattered clouds: 25-50%
+    803: "04d",  // broken clouds: 51-84%
+    804: "04d",  // overcast clouds: 85-100%
+  };
+
+  // Default to clear sky if ID is not found
+  const defaultIcon = "01d";
+  return iconMappings[id] || defaultIcon;
+}
+
 //Variables to store API key and API url for specific location
 const API_KEY = "b99f308a84c42a7a2c701a26eba18058";
 const CURRENT_WEATHER_API_URL = `https://api.openweathermap.org/data/2.5/weather?q=Stockholm,Sweden&units=metric&APPID=${API_KEY}`;
@@ -43,17 +109,18 @@ fetch(CURRENT_WEATHER_API_URL)
         // Display current weather data
         const sunrise = formatTime(currentData.sys.sunrise);
         const sunset = formatTime(currentData.sys.sunset);
-        const description = currentData.weather[0].description;
         const temperature = Math.round(currentData.main.temp * 10) / 10;
-        const feelsLike = Math.round(currentData.main.feels_like * 10) / 10;
 
         document.querySelector(
           ".current-temperature"
         ).textContent = `${temperature} °C`;
         document.querySelector(".city").textContent = currentData.name;
-        document.querySelector(".time").textContent = `Time: ${formatTime(currentData.dt)}`;
-        document.querySelector(".description").textContent = `${description}`;
-        document.querySelector(".feels-like").textContent = `Feels Like ${feelsLike} °C`;
+        document.querySelector(".time").textContent = `Time: ${formatTime(
+          currentData.dt
+        )}`;
+        document.querySelector(
+          ".description"
+        ).textContent = `${currentData.weather[0].description}`;
         document.querySelector(
           ".wind-speed"
         ).textContent = `Wind Speed ${currentData.wind.speed} m/s`;
@@ -72,24 +139,24 @@ fetch(CURRENT_WEATHER_API_URL)
           const minTemp = Math.min(
             ...dailyForecasts[date].map((forecast) => forecast.main.temp_min)
           );
-          const dayDescription = dailyForecasts[date][0].weather[0].description;
-          const isRainy = dailyForecasts[date].some((forecast) =>
-            forecast.weather[0].main.toLowerCase().includes("rain")
-          );
-
+          const dayID = dailyForecasts[date][0].weather[0].id;
+        
           // Calculate the day name for the forecast
           const forecastDate = new Date(date);
           const dayName = getDayName(forecastDate);
-
-          // Extract maximum wind speed for the day's forecast
-          const maxWindSpeed = Math.max(
-            ...dailyForecasts[date].map((forecast) => forecast.wind.speed)
-          );
-
+        
+          // Map the weather icon using the ID
+          const iconID = mapWeatherConditionToIcon(dayID);
+        
+          // Generate the icon URL based on the ID (https://openweathermap.org/weather-conditions#Weather-Condition-Codes-2)
+          const iconURL = `https://openweathermap.org/img/wn/${iconID}@2x.png`;
+        
           forecastList.innerHTML += `
             <li>
-                ${dayName} Weather Icon <img src="design/design1/assets/Group16.png" alt="Weather Icon" />
-                ${maxTemp.toFixed(1)}°C - ${minTemp.toFixed(1)}°C ${maxWindSpeed.toFixed(1)} m/s
+                ${dayName} Weather Icon <img src="${iconURL}" alt="Weather Icon" />
+                ${maxTemp.toFixed(1)}°C - ${minTemp.toFixed(
+                1
+              )}°C
             </li>
           `;
         }

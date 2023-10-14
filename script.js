@@ -7,10 +7,16 @@ function formatTime(timestamp) {
   return `${hours}:${minutes}`;
 }
 
-// Function to get the day name
+// Function to get the day name or today
 function getDayName(date) {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  return days[date.getDay()];
+  const today = new Date();
+  
+  if (date.toDateString() === today.toDateString()) {
+    return "Today";
+  } else {
+    return days[date.getDay()];
+  }
 }
 
 // Function to map weather icons based on the provided ID as in the web page
@@ -89,7 +95,7 @@ const weatherApp = document.querySelector(".weather-app");
 fetch(CURRENT_WEATHER_API_URL)
   .then((res) => res.json())
   .then((currentData) => {
-    // Fetch weather forecast data for that specific location
+    // Fetch weather forecast data for the specific location
     fetch(FORECAST_API_URL)
       .then((res) => res.json())
       .then((forecastData) => {
@@ -111,28 +117,25 @@ fetch(CURRENT_WEATHER_API_URL)
         const sunset = formatTime(currentData.sys.sunset);
         const temperature = Math.round(currentData.main.temp * 10) / 10;
 
-        document.querySelector(
-          ".current-temperature"
-        ).textContent = `${temperature} °C`;
-        document.querySelector(".city").textContent = currentData.name;
-        document.querySelector(".time").textContent = `Time: ${formatTime(
-          currentData.dt
-        )}`;
-        document.querySelector(
-          ".description"
-        ).textContent = `${currentData.weather[0].description}`;
-        document.querySelector(
-          ".wind-speed"
-        ).innerHTML = `<img src="/design/design1/assets 2/windy-weather.gif" alt="Wind Icon" /> ${currentData.wind.speed} m/s`;
-        document.querySelector(
-          ".sunrise-sunset"
-        ).innerHTML = `<img src="/design/design1/assets 2/sunrise-weather.gif" alt="Sunrise Icon" /> ${sunrise} <img src="/design/design1/assets 2/sunset-weather.gif" alt="Sunset Icon" /> ${sunset}`;
+        // Get the current weather description and map it to an icon
+        const currentWeatherDescription = currentData.weather[0].description;
+        const capitalizedDescription = currentWeatherDescription.charAt(0).toUpperCase() + currentWeatherDescription.slice(1);
+        const currentWeatherIcon = mapWeatherConditionToIcon(currentData.weather[0].id);
 
-        // Display weather forecast
+        document.querySelector(".current-temperature").textContent = `${temperature} °C`;
+        document.querySelector(".city").textContent = currentData.name;
+        document.querySelector(".time").textContent = `Time: ${formatTime(currentData.dt)}`;
+        document.querySelector(".description").innerHTML = `${capitalizedDescription} <img src="https://openweathermap.org/img/wn/${currentWeatherIcon}@2x.png" alt="${currentWeatherDescription} Icon" style="width: 40%; height: 40%;" />`;
+        document.querySelector(".wind-speed").innerHTML = `<img src="/design/design1/assets 2/windy-weather.gif" alt="Wind Icon" /> ${currentData.wind.speed} m/s`;
+        document.querySelector(".sunrise-sunset").innerHTML = `<img src="/design/design1/assets 2/sunrise-weather.gif" alt="Sunrise Icon" /> ${sunrise} <img src="/design/design1/assets 2/sunset-weather.gif" alt="Sunset Icon" /> ${sunset}`;
+
+        // Display the weather forecast
         const forecastList = document.querySelector(".forecast-list");
         forecastList.innerHTML = "";
 
         for (const date in dailyForecasts) {
+          console.log(dailyForecasts);
+          //Finding the highest and lowest temperature in the array to display
           const maxTemp = Math.max(
             ...dailyForecasts[date].map((forecast) => forecast.main.temp_max)
           );
@@ -140,23 +143,22 @@ fetch(CURRENT_WEATHER_API_URL)
             ...dailyForecasts[date].map((forecast) => forecast.main.temp_min)
           );
           const dayID = dailyForecasts[date][0].weather[0].id;
-        
           // Calculate the day name for the forecast
           const forecastDate = new Date(date);
           const dayName = getDayName(forecastDate);
-        
           // Map the weather icon using the ID
           const iconID = mapWeatherConditionToIcon(dayID);
-        
-          // Generate the icon URL based on the ID (https://openweathermap.org/weather-conditions#Weather-Condition-Codes-2)
+          // Generate the icon URL based on the ID 
           const iconURL = `https://openweathermap.org/img/wn/${iconID}@2x.png`;
-        
+          // Getting the wind info
+          const windSpeed = dailyForecasts[date][0].wind.speed;
+          console.log(windSpeed);
           forecastList.innerHTML += `
             <li>
-                ${dayName} <img src="${iconURL}" alt="Weather Icon" />
-                ${maxTemp.toFixed(1)}°C - ${minTemp.toFixed(
-                1
-              )}°C
+              ${dayName} <img src="${iconURL}" alt="Weather Icon" />
+              ${maxTemp.toFixed(0)}°C-${minTemp.toFixed(0)}°C 
+              <img src="/design/design1/assets 2/windy-weather.gif" alt="Wind Icon" />
+              ${windSpeed.toFixed(1)}m/s
             </li>
           `;
         }

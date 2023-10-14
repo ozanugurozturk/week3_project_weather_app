@@ -19,6 +19,78 @@ function getDayName(date) {
   }
 }
 
+// Capitalize First Letters Function
+function capitalizeFirstLetters(str) {
+  const words = str.split(" ");
+  const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+  return capitalizedWords.join(" ");
+}
+
+function mapWeatherConditionToBackgroundColor(id) {
+  // Define mappings of condition IDs to background colors
+  const backgroundColors = {
+    200: "#484848",    // Thunderstorm with light rain
+    201: "#484848",    // Thunderstorm with rain
+    202: "#484848",    // Thunderstorm with heavy rain
+    210: "#484848",    // Light thunderstorm
+    211: "#484848",    // Thunderstorm
+    212: "#484848",    // Heavy thunderstorm
+    221: "#484848",    // Ragged thunderstorm
+    230: "#484848",    // Thunderstorm with light drizzle
+    231: "#484848",    // Thunderstorm with drizzle
+    232: "#484848",    // Thunderstorm with heavy drizzle
+    300: "#87CEEB",    // Light intensity drizzle
+    301: "#87CEEB",    // Drizzle
+    302: "#87CEEB",    // Heavy intensity drizzle
+    310: "#87CEEB",    // Light intensity drizzle rain
+    311: "#87CEEB",    // Drizzle rain
+    312: "#87CEEB",    // Heavy intensity drizzle rain
+    313: "#87CEEB",    // Shower rain and drizzle
+    314: "#87CEEB",    // Heavy shower rain and drizzle
+    321: "#87CEEB",    // Shower drizzle
+    500: "#87CEEB",    // Light rain
+    501: "#87CEEB",    // Moderate rain
+    502: "#87CEEB",    // Heavy intensity rain
+    503: "#87CEEB",    // Very heavy rain
+    504: "#87CEEB",    // Extreme rain
+    511: "#A9A9A9",    // Freezing rain
+    520: "#87CEEB",    // Light intensity shower rain
+    521: "#87CEEB",    // Shower rain
+    522: "#87CEEB",    // Heavy intensity shower rain
+    531: "#87CEEB",    // Ragged shower rain
+    600: "#D3D3D3",    // Light snow
+    601: "#D3D3D3",    // Snow
+    602: "#D3D3D3",    // Heavy snow
+    611: "#D3D3D3",    // Sleet
+    612: "#D3D3D3",    // Light shower sleet
+    613: "#D3D3D3",    // Shower sleet
+    615: "#D3D3D3",    // Light rain and snow
+    616: "#D3D3D3",    // Rain and snow
+    620: "#D3D3D3",    // Light shower snow
+    621: "#D3D3D3",    // Shower snow
+    622: "#D3D3D3",    // Heavy shower snow
+    701: "#A9A9A9",    // Mist
+    711: "#A9A9A9",    // Smoke
+    721: "#A9A9A9",    // Haze
+    731: "#A9A9A9",    // Sand/dust whirls
+    741: "#A9A9A9",    // Fog
+    751: "#A9A9A9",    // Sand
+    761: "#A9A9A9",    // Dust
+    762: "#A9A9A9",    // Volcanic ash
+    771: "#A9A9A9",    // Squalls
+    781: "#A9A9A9",    // Tornado
+    800: "#87CEEB",    // Clear sky
+    801: "#87CEEB",    // Few clouds: 11-25%
+    802: "#D3D3D3",    // Scattered clouds: 25-50%
+    803: "#A9A9A9",    // Broken clouds: 51-84%
+    804: "#696969"     // Overcast clouds: 85-100%
+  };
+
+  // Default to a generic color if ID is not found
+  const defaultColor = "lightgray";
+  return backgroundColors[id] || defaultColor;
+}
+
 // Function to map weather icons based on the provided ID as in the web page
 function mapWeatherConditionToIcon(id) {
   const iconMappings = {
@@ -95,6 +167,10 @@ const weatherApp = document.querySelector(".weather-app");
 fetch(CURRENT_WEATHER_API_URL)
   .then((res) => res.json())
   .then((currentData) => {
+    // Theme selector
+    const weatherConditionId = currentData.weather[0].id;
+    const backgroundColor = mapWeatherConditionToBackgroundColor(weatherConditionId);
+    weatherApp.style.backgroundColor = backgroundColor;
     // Fetch weather forecast data for the specific location
     fetch(FORECAST_API_URL)
       .then((res) => res.json())
@@ -119,7 +195,7 @@ fetch(CURRENT_WEATHER_API_URL)
 
         // Get the current weather description and map it to an icon
         const currentWeatherDescription = currentData.weather[0].description;
-        const capitalizedDescription = currentWeatherDescription.charAt(0).toUpperCase() + currentWeatherDescription.slice(1);
+        const capitalizedDescription = capitalizeFirstLetters(currentWeatherDescription);
         const currentWeatherIcon = mapWeatherConditionToIcon(currentData.weather[0].id);
 
         document.querySelector(".current-temperature").textContent = `${temperature} °C`;
@@ -134,7 +210,6 @@ fetch(CURRENT_WEATHER_API_URL)
         forecastList.innerHTML = "";
 
         for (const date in dailyForecasts) {
-          console.log(dailyForecasts);
           //Finding the highest and lowest temperature in the array to display
           const maxTemp = Math.max(
             ...dailyForecasts[date].map((forecast) => forecast.main.temp_max)
@@ -152,7 +227,6 @@ fetch(CURRENT_WEATHER_API_URL)
           const iconURL = `https://openweathermap.org/img/wn/${iconID}@2x.png`;
           // Getting the wind info
           const windSpeed = dailyForecasts[date][0].wind.speed;
-          console.log(windSpeed);
           forecastList.innerHTML += `
             <li>
               ${dayName} <img src="${iconURL}" alt="Weather Icon" />

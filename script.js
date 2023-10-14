@@ -123,10 +123,10 @@ fetch(CURRENT_WEATHER_API_URL)
         ).textContent = `${currentData.weather[0].description}`;
         document.querySelector(
           ".wind-speed"
-        ).textContent = `Wind Speed ${currentData.wind.speed} m/s`;
+        ).innerHTML = `<img src="/design/design1/assets 2/windy-weather.gif" alt="Wind Icon" /> ${currentData.wind.speed} m/s`;
         document.querySelector(
           ".sunrise-sunset"
-        ).textContent = `Sunrise ${sunrise}   Sunset ${sunset}`;
+        ).innerHTML = `<img src="/design/design1/assets 2/sunrise-weather.gif" alt="Sunrise Icon" /> ${sunrise} <img src="/design/design1/assets 2/sunset-weather.gif" alt="Sunset Icon" /> ${sunset}`;
 
         // Display weather forecast
         const forecastList = document.querySelector(".forecast-list");
@@ -153,7 +153,7 @@ fetch(CURRENT_WEATHER_API_URL)
         
           forecastList.innerHTML += `
             <li>
-                ${dayName} Weather Icon <img src="${iconURL}" alt="Weather Icon" />
+                ${dayName} <img src="${iconURL}" alt="Weather Icon" />
                 ${maxTemp.toFixed(1)}°C - ${minTemp.toFixed(
                 1
               )}°C
